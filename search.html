@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Search Anime</title>
+<style>
+body{margin:0;background:#07070a;color:#fff;font-family:sans-serif}
+.container{width:min(1400px,92%);margin:auto;padding:2rem 0}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+input,select{padding:1rem;border-radius:14px;border:none;background:#111;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem;margin-top:2rem}
+.card{background:#111;border-radius:18px;overflow:hidden}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover}
+.card div{padding:1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="filters">
+<input id="search" placeholder="Search anime...">
+<select id="type"><option value="">All Types</option><option>tv</option><option>movie</option></select>
+<select id="sort"><option value="desc">Top Rated</option><option value="asc">Lowest</option></select>
+</div>
+<div class="grid" id="grid"></div>
+</div>
+<script>
+const API='https://api.jikan.moe/v4';
+async function load(){
+const q=document.getElementById('search').value;
+const type=document.getElementById('type').value;
+const data=await(await fetch(`${API}/anime?q=${q}&type=${type}&limit=24`)).json();
+const list=data.data||[];
+document.getElementById('grid').innerHTML=list.map(a=>`<a class='card' href='anime.html?id=${a.mal_id}'><img src='${a.images.jpg.image_url}'><div>${a.title}</div></a>`).join('')
+}
+load();
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',load));
+</script>
+</body>
+</html>
