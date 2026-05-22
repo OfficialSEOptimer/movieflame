@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Anime Schedule</title>
+<style>
+body{margin:0;background:#07070a;color:#fff;font-family:sans-serif}
+.tabs{display:flex;overflow:auto;gap:1rem;padding:1rem;position:sticky;top:0;background:#07070a}
+.tab{padding:1rem 1.2rem;border-radius:999px;background:#15151c;white-space:nowrap;cursor:pointer}
+.grid{width:min(1400px,92%);margin:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;padding:2rem 0}
+.card{background:#111;border-radius:20px;overflow:hidden}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover}
+.card div{padding:1rem}
+</style>
+</head>
+<body>
+<div class="tabs" id="tabs"></div>
+<div class="grid" id="grid"></div>
+<script>
+const days=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+const tabs=document.getElementById('tabs');
+days.forEach(d=>tabs.innerHTML+=`<div class='tab' onclick='loadDay("${d}")'>${d}</div>`)
+async function loadDay(day){
+const data=await(await fetch(`https://api.jikan.moe/v4/schedules?filter=${day}`)).json();
+document.getElementById('grid').innerHTML=(data.data||[]).map(a=>`<a class='card' href='anime.html?id=${a.mal_id}'><img src='${a.images.jpg.image_url}'><div>${a.title}</div></a>`).join('')
+}
+loadDay('monday');
+</script>
+</body>
+</html>
